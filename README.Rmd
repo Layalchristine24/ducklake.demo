@@ -16,7 +16,11 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-A 5-minute demonstration of **DuckLake** - a lakehouse format directly in DuckDB with metadata in SQL, time travel, ACID transactions, schema evolution, and MERGE INTO support.
+**The problem**: Traditional data lakes (just Parquet files) have no versioning, no transactions, no easy way to track changes.
+
+**Existing solutions**: Iceberg and Delta Lake solve this, but they're complex — metadata stored in JSON/Avro files, need Spark clusters.
+
+**DuckLake's approach**: Store metadata in a simple SQL database (SQLite), keep data in Parquet files. It's like having Git-like version control for your data, but queryable with SQL.
 
 ## Setup
 

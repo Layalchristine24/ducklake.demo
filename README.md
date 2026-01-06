@@ -7,9 +7,15 @@
 
 <!-- badges: end -->
 
-A 5-minute demonstration of **DuckLake** - a lakehouse format directly
-in DuckDB with metadata in SQL, time travel, ACID transactions, schema
-evolution, and MERGE INTO support.
+**The problem**: Traditional data lakes (just Parquet files) have no
+versioning, no transactions, no easy way to track changes.
+
+**Existing solutions**: Iceberg and Delta Lake solve this, but they’re
+complex — metadata stored in JSON/Avro files, need Spark clusters.
+
+**DuckLake’s approach**: Store metadata in a simple SQL database
+(SQLite), keep data in Parquet files. It’s like having Git-like version
+control for your data, but queryable with SQL.
 
 ## Setup
 
@@ -44,7 +50,7 @@ DBI::dbExecute(
 DBI::dbGetQuery(con, "SHOW DATABASES")
 #>              database_name
 #> 1 __ducklake_metadata_lake
-#> 2     duckplyrc4704e204675
+#> 2     duckplyrc6df2ae91a1e
 #> 3                     lake
 ```
 
@@ -183,13 +189,13 @@ tbl(con, I("lake.customers")) |> arrange(id) |> collect()
 # Version history
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #>   snapshot_id       snapshot_time schema_version
-#> 1           0 2026-01-06 10:48:54              0
-#> 2           1 2026-01-06 10:48:54              1
-#> 3           2 2026-01-06 10:48:54              1
-#> 4           3 2026-01-06 10:48:54              1
-#> 5           4 2026-01-06 10:48:54              1
-#> 6           5 2026-01-06 10:48:54              2
-#> 7           6 2026-01-06 10:48:54              2
+#> 1           0 2026-01-06 10:52:24              0
+#> 2           1 2026-01-06 10:52:24              1
+#> 3           2 2026-01-06 10:52:24              1
+#> 4           3 2026-01-06 10:52:25              1
+#> 5           4 2026-01-06 10:52:25              1
+#> 6           5 2026-01-06 10:52:25              2
+#> 7           6 2026-01-06 10:52:25              2
 #>                                           changes author commit_message
 #> 1                           schemas_created, main   <NA>           <NA>
 #> 2                  tables_created, main.customers   <NA>           <NA>
@@ -213,7 +219,7 @@ DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #   These track which rows have been logically removed without rewriting data files
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_table_info('lake')")
 #>   table_name schema_id table_id                           table_uuid file_count
-#> 1  customers         0        1 019b92ec-8a9d-7997-a3de-9b43061d63c6          4
+#> 1  customers         0        1 019b92ef-c168-7955-be77-8552e1f395d4          4
 #>   file_size_bytes delete_file_count delete_file_size_bytes
 #> 1            2373                 1                    844
 ```
