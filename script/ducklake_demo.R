@@ -33,8 +33,8 @@ cli_h1("DuckLake Demo - Lakehouse directly in DuckDB")
 cli_h2("Creating DuckLake database (metadata in SQLite, data in Parquet)")
 DBI::dbExecute(
   con,
-  sprintf("ATTACH 'ducklake:%s/metadata.ducklake' AS test_lake", path)
-) # Schema name is 'test_lake'
+  sprintf("ATTACH 'ducklake:%s/metadata.ducklake' AS lake", path)
+)
 cli_alert_success("DuckLake attached - metadata stored in 'metadata.ducklake'")
 # system("file metadata_files/metadata.ducklake")
 # system("file metadata_files/metadata.ducklake.wal")
@@ -51,7 +51,7 @@ cli_h2("Creating table and inserting data")
 DBI::dbExecute(
   con,
   "
-    CREATE TABLE test_lake.customers (
+    CREATE TABLE lake.customers (
         id INTEGER,
         name VARCHAR,
         email VARCHAR
@@ -62,7 +62,7 @@ DBI::dbExecute(
 DBI::dbExecute(
   con,
   "
-    INSERT INTO test_lake.customers (id, name, email) VALUES
+    INSERT INTO lake.customers (id, name, email) VALUES
     (1, 'Alice', 'alice@example.com'),
     (2, 'Bob', 'bob@example.com'),
     (3, 'Charlie', 'charlie@example.com')
@@ -72,9 +72,9 @@ cli_alert_success("Inserted 3 customers")
 
 # Query with duckplyr
 cli_alert_info("Current data:")
-customers <- tbl(con, I("test_lake.customers")) |> collect()
+customers <- tbl(con, I("lake.customers")) |> collect()
 print(customers)
-# also possible via DBI::dbGetQuery(con, "SELECT * FROM test_lake.customers")
+# also possible via DBI::dbGetQuery(con, "SELECT * FROM lake.customers")
 # read parquet files directly:
 arrow::read_parquet(file.path(
   "metadata_files/metadata.ducklake.files/main/customers",
@@ -89,7 +89,7 @@ cli_h2("Time Travel Demo")
 # Get snapshot AFTER initial insert (this is the version with our 3 customers)
 snapshots <- DBI::dbGetQuery(
   con,
-  "SELECT * FROM ducklake_snapshots('test_lake')"
+  "SELECT * FROM ducklake_snapshots('lake')"
 )
 cli_alert_info("Current snapshots (after initial insert):")
 print(snapshots)
@@ -103,16 +103,16 @@ cli_alert_info(
 # Make changes
 DBI::dbExecute(
   con,
-  "UPDATE test_lake.customers SET email = 'alice.new@example.com' WHERE id = 1"
+  "UPDATE lake.customers SET email = 'alice.new@example.com' WHERE id = 1"
 )
 DBI::dbExecute(
   con,
-  "INSERT INTO test_lake.customers (id, name, email) VALUES (4, 'Diana', 'diana@example.com')"
+  "INSERT INTO lake.customers (id, name, email) VALUES (4, 'Diana', 'diana@example.com')"
 )
 cli_alert_success("Updated Alice's email and added Diana")
 
 cli_alert_info("Data AFTER changes:")
-customers_after <- tbl(con, I("test_lake.customers")) |> collect()
+customers_after <- tbl(con, I("lake.customers")) |> collect()
 print(customers_after)
 
 # Time travel back to see original data
@@ -122,7 +122,7 @@ cli_alert_info(
 old_data <- DBI::dbGetQuery(
   con,
   sprintf(
-    "SELECT * FROM test_lake.customers AT (VERSION => %s)",
+    "SELECT * FROM lake.customers AT (VERSION => %s)",
     snapshot_before_changes
   )
 )
@@ -130,7 +130,7 @@ print(old_data)
 
 # V.S. current data
 
-intermediate_data <- tbl(con, I("test_lake.customers")) |> collect()
+intermediate_data <- tbl(con, I("lake.customers")) |> collect()
 print(intermediate_data)
 # ==============================================================================
 # Step 4: Schema Evolution
@@ -139,11 +139,11 @@ print(intermediate_data)
 cli_h2("Schema Evolution - Adding a column")
 DBI::dbExecute(
   con,
-  "ALTER TABLE test_lake.customers ADD COLUMN status VARCHAR DEFAULT 'active'"
+  "ALTER TABLE lake.customers ADD COLUMN status VARCHAR DEFAULT 'active'"
 )
 cli_alert_success("Added 'status' column")
 
-customers_evolved <- tbl(con, I("test_lake.customers")) |> collect()
+customers_evolved <- tbl(con, I("lake.customers")) |> collect()
 print(customers_evolved)
 
 # ==============================================================================
@@ -167,7 +167,7 @@ DBI::dbExecute(
 DBI::dbExecute(
   con,
   "
-    MERGE INTO test_lake.customers AS target
+    MERGE INTO lake.customers AS target
     USING updates AS source
     ON target.id = source.id
     WHEN MATCHED THEN UPDATE SET
@@ -179,7 +179,7 @@ DBI::dbExecute(
 )
 cli_alert_success("Merged updates (Alice updated, Eve inserted)")
 
-final_data <- tbl(con, I("test_lake.customers")) |>
+final_data <- tbl(con, I("lake.customers")) |>
   arrange(id) |>
   collect()
 print(final_data)
@@ -190,8 +190,8 @@ print(final_data)
 
 cli_h2("Metadata inspection")
 
-# The catalog is called 'test_lake' (from ATTACH ... AS test_lake)
-catalog <- "test_lake"
+# The catalog is called 'lake' (from ATTACH ... AS lake)
+catalog <- "lake"
 
 cli_alert_info("Snapshots (version history):")
 all_snapshots <- DBI::dbGetQuery(
@@ -233,7 +233,7 @@ cli_h1("Demo complete!")
 # ==============================================================================
 
 # Detach the DuckLake database
-DBI::dbExecute(con, "DETACH test_lake")
+DBI::dbExecute(con, "DETACH lake")
 
 # Close the connection explicitly (will need to restart R for new duckplyr operations)
 DBI::dbDisconnect(con, shutdown = TRUE)
