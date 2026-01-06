@@ -44,6 +44,8 @@ DBI::dbExecute(con, "LOAD ducklake")
 
 Metadata is stored in SQLite, data in Parquet files.
 
+The `ATTACH ... AS lake` statement creates a **catalog** (database) named `lake`. Tables are then accessed as `lake.table_name` (using the default schema) or `lake.schema_name.table_name`.
+
 ```{r create-db}
 DBI::dbExecute(
   con,

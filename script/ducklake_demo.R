@@ -31,6 +31,8 @@ cli_h1("DuckLake Demo - Lakehouse directly in DuckDB")
 # ==============================================================================
 
 cli_h2("Creating DuckLake database (metadata in SQLite, data in Parquet)")
+# ATTACH ... AS lake creates a catalog (database) named 'lake'
+# Tables are accessed as: lake.schema_name.table_name (or lake.table_name for default schema)
 DBI::dbExecute(
   con,
   sprintf("ATTACH 'ducklake:%s/metadata.ducklake' AS lake", path)
