@@ -130,7 +130,8 @@ print(old_data)
 
 # V.S. current data
 
-tbl(con, I("test_lake.customers")) |> collect()
+intermediate_data <- tbl(con, I("test_lake.customers")) |> collect()
+print(intermediate_data)
 # ==============================================================================
 # Step 4: Schema Evolution
 # ==============================================================================
