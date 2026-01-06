@@ -44,7 +44,7 @@ DBI::dbExecute(
 DBI::dbGetQuery(con, "SHOW DATABASES")
 #>              database_name
 #> 1 __ducklake_metadata_lake
-#> 2     duckplyrab47716748e1
+#> 2     duckplyrc4704e204675
 #> 3                     lake
 ```
 
@@ -183,13 +183,13 @@ tbl(con, I("lake.customers")) |> arrange(id) |> collect()
 # Version history
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #>   snapshot_id       snapshot_time schema_version
-#> 1           0 2026-01-06 09:59:58              0
-#> 2           1 2026-01-06 09:59:58              1
-#> 3           2 2026-01-06 09:59:58              1
-#> 4           3 2026-01-06 09:59:58              1
-#> 5           4 2026-01-06 09:59:58              1
-#> 6           5 2026-01-06 09:59:58              2
-#> 7           6 2026-01-06 09:59:58              2
+#> 1           0 2026-01-06 10:48:54              0
+#> 2           1 2026-01-06 10:48:54              1
+#> 3           2 2026-01-06 10:48:54              1
+#> 4           3 2026-01-06 10:48:54              1
+#> 5           4 2026-01-06 10:48:54              1
+#> 6           5 2026-01-06 10:48:54              2
+#> 7           6 2026-01-06 10:48:54              2
 #>                                           changes author commit_message
 #> 1                           schemas_created, main   <NA>           <NA>
 #> 2                  tables_created, main.customers   <NA>           <NA>
@@ -208,9 +208,12 @@ DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #> 7              <NA>
 
 # Table info
+# - file_count: number of Parquet data files
+# - delete_file_count: number of positional delete files (created by UPDATE/DELETE/MERGE)
+#   These track which rows have been logically removed without rewriting data files
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_table_info('lake')")
 #>   table_name schema_id table_id                           table_uuid file_count
-#> 1  customers         0        1 019b92bf-bec5-7116-a286-155366f5c340          4
+#> 1  customers         0        1 019b92ec-8a9d-7997-a3de-9b43061d63c6          4
 #>   file_size_bytes delete_file_count delete_file_size_bytes
 #> 1            2373                 1                    844
 ```

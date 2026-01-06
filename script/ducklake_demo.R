@@ -201,6 +201,10 @@ all_snapshots <- DBI::dbGetQuery(
 print(all_snapshots)
 
 cli_alert_info("Tables in DuckLake:")
+# Table info columns:
+# - file_count: number of Parquet data files
+# - delete_file_count: number of positional delete files (created by UPDATE/DELETE/MERGE)
+#   These track which rows have been logically removed without rewriting data files
 tables <- DBI::dbGetQuery(
   con,
   sprintf("SELECT * FROM ducklake_table_info('%s')", catalog)
