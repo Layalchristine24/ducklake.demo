@@ -56,3 +56,5 @@ work/
 .Renviron
 *.rds
 
+#metadata files
+metadata_files/*
