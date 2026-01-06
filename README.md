@@ -44,7 +44,7 @@ DBI::dbExecute(
 DBI::dbGetQuery(con, "SHOW DATABASES")
 #>              database_name
 #> 1 __ducklake_metadata_lake
-#> 2     duckplyr9df71937c7e7
+#> 2     duckplyrab47716748e1
 #> 3                     lake
 ```
 
@@ -183,13 +183,13 @@ tbl(con, I("lake.customers")) |> arrange(id) |> collect()
 # Version history
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #>   snapshot_id       snapshot_time schema_version
-#> 1           0 2026-01-06 09:44:41              0
-#> 2           1 2026-01-06 09:44:41              1
-#> 3           2 2026-01-06 09:44:42              1
-#> 4           3 2026-01-06 09:44:42              1
-#> 5           4 2026-01-06 09:44:42              1
-#> 6           5 2026-01-06 09:44:42              2
-#> 7           6 2026-01-06 09:44:42              2
+#> 1           0 2026-01-06 09:59:58              0
+#> 2           1 2026-01-06 09:59:58              1
+#> 3           2 2026-01-06 09:59:58              1
+#> 4           3 2026-01-06 09:59:58              1
+#> 5           4 2026-01-06 09:59:58              1
+#> 6           5 2026-01-06 09:59:58              2
+#> 7           6 2026-01-06 09:59:58              2
 #>                                           changes author commit_message
 #> 1                           schemas_created, main   <NA>           <NA>
 #> 2                  tables_created, main.customers   <NA>           <NA>
@@ -210,7 +210,7 @@ DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 # Table info
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_table_info('lake')")
 #>   table_name schema_id table_id                           table_uuid file_count
-#> 1  customers         0        1 019b92b1-c2f8-7ff0-baa5-55fc423067f3          4
+#> 1  customers         0        1 019b92bf-bec5-7116-a286-155366f5c340          4
 #>   file_size_bytes delete_file_count delete_file_size_bytes
 #> 1            2373                 1                    844
 ```
@@ -226,6 +226,15 @@ DBI::dbGetQuery(con, "SELECT * FROM ducklake_table_info('lake')")
 
 Perfect for data lakes that need versioning + transactions without the
 complexity of Iceberg/Delta Lake!
+
+## Sources
+
+- [DuckLake GitHub Repository](https://github.com/duckdb/ducklake)
+- [DuckLake Announcement Blog
+  Post](https://duckdb.org/2025/05/27/ducklake)
+- [DuckLake
+  Documentation](https://duckdb.org/docs/stable/core_extensions/ducklake)
+- [duckplyr Package](https://duckplyr.tidyverse.org/)
 
 ## Cleanup
 

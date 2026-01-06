@@ -160,6 +160,13 @@ DBI::dbGetQuery(con, "SELECT * FROM ducklake_table_info('lake')")
 
 Perfect for data lakes that need versioning + transactions without the complexity of Iceberg/Delta Lake!
 
+## Sources
+
+- [DuckLake GitHub Repository](https://github.com/duckdb/ducklake)
+- [DuckLake Announcement Blog Post](https://duckdb.org/2025/05/27/ducklake)
+- [DuckLake Documentation](https://duckdb.org/docs/stable/core_extensions/ducklake)
+- [duckplyr Package](https://duckplyr.tidyverse.org/)
+
 ## Cleanup
 
 ```{r cleanup}
