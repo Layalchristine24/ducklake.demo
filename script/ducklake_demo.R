@@ -75,7 +75,11 @@ cli_alert_info("Current data:")
 customers <- tbl(con, I("test_lake.customers")) |> collect()
 print(customers)
 # also possible via DBI::dbGetQuery(con, "SELECT * FROM test_lake.customers")
-
+# read parquet files directly:
+arrow::read_parquet(file.path(
+  "metadata_files/metadata.ducklake.files/main/customers",
+  list.files("metadata_files/metadata.ducklake.files/main/customers")
+))
 # ==============================================================================
 # Step 3: Time Travel
 # ==============================================================================
@@ -92,7 +96,9 @@ print(snapshots)
 
 # Save the latest snapshot version (with 3 customers)
 snapshot_before_changes <- max(snapshots$snapshot_id)
-cli_alert_info("Saving snapshot version {snapshot_before_changes} as our 'before' state")
+cli_alert_info(
+  "Saving snapshot version {snapshot_before_changes} as our 'before' state"
+)
 
 # Make changes
 DBI::dbExecute(
@@ -110,7 +116,9 @@ customers_after <- tbl(con, I("test_lake.customers")) |> collect()
 print(customers_after)
 
 # Time travel back to see original data
-cli_alert_info("Time travel to version {snapshot_before_changes} (BEFORE changes):")
+cli_alert_info(
+  "Time travel to version {snapshot_before_changes} (BEFORE changes):"
+)
 old_data <- DBI::dbGetQuery(
   con,
   sprintf(
@@ -120,6 +128,9 @@ old_data <- DBI::dbGetQuery(
 )
 print(old_data)
 
+# V.S. current data
+
+tbl(con, I("test_lake.customers")) |> collect()
 # ==============================================================================
 # Step 4: Schema Evolution
 # ==============================================================================
@@ -189,7 +200,10 @@ all_snapshots <- DBI::dbGetQuery(
 print(all_snapshots)
 
 cli_alert_info("Tables in DuckLake:")
-tables <- DBI::dbGetQuery(con, sprintf("SELECT * FROM ducklake_tables('%s')", catalog))
+tables <- DBI::dbGetQuery(
+  con,
+  sprintf("SELECT * FROM ducklake_table_info('%s')", catalog)
+)
 print(tables)
 
 # ==============================================================================
@@ -207,7 +221,7 @@ cli_ol(c(
 ))
 cli_text("")
 cli_alert_success(
- "Perfect for: Data lakes that need versioning + transactions
+  "Perfect for: Data lakes that need versioning + transactions
 without the complexity of Iceberg/Delta Lake!"
 )
 
@@ -224,4 +238,4 @@ DBI::dbExecute(con, "DETACH test_lake")
 DBI::dbDisconnect(con, shutdown = TRUE)
 
 # To fully clean up demo files, uncomment:
-# unlink(path, recursive = TRUE)
+unlink(path, recursive = TRUE)
