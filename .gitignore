@@ -58,3 +58,6 @@ work/
 
 #metadata files
 metadata_files/*
+
+/.quarto/
+**/*.quarto_ipynb
