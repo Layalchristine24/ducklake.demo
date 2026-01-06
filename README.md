@@ -23,7 +23,7 @@ control for your data, but queryable with SQL.
 library(duckplyr)
 
 # Setup paths and clean slate
-path <- "metadata_files"
+path <- "demo-ducklake"
 unlink(path, recursive = TRUE)
 dir.create(path, showWarnings = FALSE)
 
@@ -50,7 +50,7 @@ DBI::dbExecute(
 DBI::dbGetQuery(con, "SHOW DATABASES")
 #>              database_name
 #> 1 __ducklake_metadata_lake
-#> 2     duckplyrc6df2ae91a1e
+#> 2    duckplyr11c374db65c6c
 #> 3                     lake
 ```
 
@@ -189,13 +189,13 @@ tbl(con, I("lake.customers")) |> arrange(id) |> collect()
 # Version history
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #>   snapshot_id       snapshot_time schema_version
-#> 1           0 2026-01-06 10:52:24              0
-#> 2           1 2026-01-06 10:52:24              1
-#> 3           2 2026-01-06 10:52:24              1
-#> 4           3 2026-01-06 10:52:25              1
-#> 5           4 2026-01-06 10:52:25              1
-#> 6           5 2026-01-06 10:52:25              2
-#> 7           6 2026-01-06 10:52:25              2
+#> 1           0 2026-01-06 11:59:18              0
+#> 2           1 2026-01-06 11:59:18              1
+#> 3           2 2026-01-06 11:59:18              1
+#> 4           3 2026-01-06 11:59:19              1
+#> 5           4 2026-01-06 11:59:19              1
+#> 6           5 2026-01-06 11:59:19              2
+#> 7           6 2026-01-06 11:59:19              2
 #>                                           changes author commit_message
 #> 1                           schemas_created, main   <NA>           <NA>
 #> 2                  tables_created, main.customers   <NA>           <NA>
@@ -219,9 +219,9 @@ DBI::dbGetQuery(con, "SELECT * FROM ducklake_snapshots('lake')")
 #   These track which rows have been logically removed without rewriting data files
 DBI::dbGetQuery(con, "SELECT * FROM ducklake_table_info('lake')")
 #>   table_name schema_id table_id                           table_uuid file_count
-#> 1  customers         0        1 019b92ef-c168-7955-be77-8552e1f395d4          4
+#> 1  customers         0        1 019b932c-ff4a-79d7-a739-9db1d2997408          4
 #>   file_size_bytes delete_file_count delete_file_size_bytes
-#> 1            2373                 1                    844
+#> 1            2373                 1                    843
 ```
 
 ## Key Takeaways

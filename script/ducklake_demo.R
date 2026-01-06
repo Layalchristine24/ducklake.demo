@@ -7,7 +7,7 @@ library(duckplyr)
 library(cli)
 
 # Setup paths and clean slate
-path <- "metadata_files"
+path <- "demo-ducklake"
 unlink(path, recursive = TRUE)
 dir.create(path, showWarnings = FALSE)
 
@@ -36,8 +36,8 @@ DBI::dbExecute(
   sprintf("ATTACH 'ducklake:%s/metadata.ducklake' AS lake", path)
 )
 cli_alert_success("DuckLake attached - metadata stored in 'metadata.ducklake'")
-# system("file metadata_files/metadata.ducklake")
-# system("file metadata_files/metadata.ducklake.wal")
+# system("file demo-ducklake/metadata.ducklake")
+# system("file demo-ducklake/metadata.ducklake.wal")
 
 # Verify attachment
 DBI::dbGetQuery(con, "SHOW DATABASES")
@@ -77,8 +77,8 @@ print(customers)
 # also possible via DBI::dbGetQuery(con, "SELECT * FROM lake.customers")
 # read parquet files directly:
 arrow::read_parquet(file.path(
-  "metadata_files/metadata.ducklake.files/main/customers",
-  list.files("metadata_files/metadata.ducklake.files/main/customers")
+  "demo-ducklake/metadata.ducklake.files/main/customers",
+  list.files("demo-ducklake/metadata.ducklake.files/main/customers")
 ))
 # ==============================================================================
 # Step 3: Time Travel

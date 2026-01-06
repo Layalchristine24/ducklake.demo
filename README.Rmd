@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 library(duckplyr)
 
 # Setup paths and clean slate
-path <- "metadata_files"
+path <- "demo-ducklake"
 unlink(path, recursive = TRUE)
 dir.create(path, showWarnings = FALSE)
 

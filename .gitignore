@@ -57,7 +57,7 @@ work/
 *.rds
 
 #metadata files
-metadata_files/*
+demo-ducklake/*
 
 /.quarto/
 **/*.quarto_ipynb
